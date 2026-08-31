@@ -1,0 +1,45 @@
+# ローカル開発用のミドルウェアだけを立てる compose ファイル。
+# アプリ本体（PHP）はコンテナに入れず、ホストの PHP で
+# `php artisan serve` / `php artisan queue:work` を動かす方針。
+# 　→ 起動: docker compose up -d
+# 　→ 停止: docker compose down   （データを消すなら down -v）
+
+services:
+  # PostgreSQL 16。アプリの本番データ（videos / transcripts / summaries / tags）を保持する
+  postgres:
+    image: postgres:16-alpine
+    # ホストの 5432 に公開 → .env の DB_HOST=127.0.0.1 / DB_PORT=5432 で繋がる
+    ports:
+      - "5432:5432"
+    environment:
+      # ここの3つは .env の DB_DATABASE / DB_USERNAME / DB_PASSWORD と一致させること
+      POSTGRES_DB: translate_portfolio
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: secret
+    volumes:
+      # 名前付きボリュームに保存。コンテナを作り直してもデータは残る
+      - pgdata:/var/lib/postgresql/data
+    # 起動完了を待てるようにヘルスチェックを入れておく
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U app -d translate_portfolio"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  # Redis 7。セッション / キャッシュ / キュー（ジョブ）をすべてここに集約
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      # キューの中身が再起動で消えないよう永続化しておく
+      - redisdata:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  pgdata:
+  redisdata:
