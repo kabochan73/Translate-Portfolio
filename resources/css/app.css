@@ -7,3 +7,59 @@
     --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
 }
+
+/*
+ * 要約 Markdown（str()->markdown() が吐く生 HTML）の表示スタイル。
+ * Tailwind の Preflight で h2/ul などの既定スタイルが消えるため、
+ * .summary-body 配下だけ手で見た目を戻す。
+ * 見出しは `## TL;DR` `## キーポイント` `### [MM:SS] …` が来る想定。
+ */
+.summary-body {
+    line-height: 1.75;
+    color: #374151;
+}
+.summary-body h1,
+.summary-body h2 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: #111827;
+    margin: 1.5rem 0 0.5rem;
+}
+.summary-body h3 {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #111827;
+    margin: 1.25rem 0 0.25rem;
+}
+.summary-body p {
+    margin: 0.5rem 0;
+    font-size: 0.9rem;
+}
+.summary-body ul {
+    list-style: disc;
+    padding-left: 1.25rem;
+    margin: 0.5rem 0;
+}
+.summary-body ol {
+    list-style: decimal;
+    padding-left: 1.25rem;
+    margin: 0.5rem 0;
+}
+.summary-body li {
+    margin: 0.25rem 0;
+    font-size: 0.9rem;
+}
+.summary-body strong {
+    font-weight: 700;
+    color: #111827;
+}
+.summary-body a {
+    color: #2563eb;
+    text-decoration: underline;
+}
+.summary-body code {
+    background: #f3f4f6;
+    border-radius: 0.25rem;
+    padding: 0.1rem 0.3rem;
+    font-size: 0.85em;
+}

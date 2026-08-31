@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Enums\ProcessingStatus;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
@@ -108,5 +109,52 @@ class Video extends Model
     public function tags(): BelongsToMany
     {
         return $this->belongsToMany(Tag::class);
+    }
+
+    /**
+     * フリーワード検索。タイトル・チャンネル名・タグ名のいずれかに
+     * $term が部分一致する動画に絞り込む。
+     *
+     * 一覧ページの検索ボックス（VideoIndex）から呼ぶ。
+     * クエリの組み立てをここに置くことで、Livewire コンポーネント側は
+     * 「$q->search($term)」と書くだけで済む（コンポーネントを薄く保つ方針）。
+     *
+     * 使い方: Video::search('laravel')->get();
+     *
+     * @param  Builder<Video>  $query
+     */
+    public function scopeSearch(Builder $query, string $term): void
+    {
+        // ワイルドカードを含む LIKE パターン。'%laravel%' のようになる。
+        // ILIKE は PostgreSQL の大文字小文字を区別しない LIKE。
+        $like = '%'.$term.'%';
+
+        // 3 条件を OR でまとめる。where(Closure) で括弧付き（... OR ... OR ...）になり、
+        // 呼び出し側が他の where を足しても論理が壊れない。
+        $query->where(function (Builder $q) use ($like): void {
+            $q->where('title', 'ilike', $like)
+                ->orWhere('channel_name', 'ilike', $like)
+                // タグ名での一致は関連テーブルを見る必要があるので whereHas。
+                ->orWhereHas('tags', function (Builder $tagQuery) use ($like): void {
+                    $tagQuery->where('name', 'ilike', $like);
+                });
+        });
+    }
+
+    /**
+     * 指定した名前のタグが付いている動画に絞り込む。
+     *
+     * 一覧ページでタグのバッジをクリックしたときの絞り込みに使う。
+     * scopeSearch と違いこちらは「完全一致」（タグ名そのもので辿る）。
+     *
+     * 使い方: Video::withTag('AI')->get();
+     *
+     * @param  Builder<Video>  $query
+     */
+    public function scopeWithTag(Builder $query, string $name): void
+    {
+        $query->whereHas('tags', function (Builder $tagQuery) use ($name): void {
+            $tagQuery->where('name', $name);
+        });
     }
 }

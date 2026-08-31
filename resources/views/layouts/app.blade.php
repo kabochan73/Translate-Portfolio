@@ -24,9 +24,8 @@
                 {{ config('app.name') }}
             </a>
 
-            {{-- ここに URL 登録フォーム（SubmitVideo コンポーネント）を置く。
-                 コンポーネント本体はフェーズ5で作るので、今はプレースホルダ。 --}}
-            {{-- <livewire:submit-video /> --}}
+            {{-- どのページからでも URL を貼れる登録フォーム（ヘッダー常駐）。 --}}
+            <livewire:submit-video />
         </div>
     </header>
 
