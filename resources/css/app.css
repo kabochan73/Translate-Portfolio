@@ -12,7 +12,7 @@
  * 要約 Markdown（str()->markdown() が吐く生 HTML）の表示スタイル。
  * Tailwind の Preflight で h2/ul などの既定スタイルが消えるため、
  * .summary-body 配下だけ手で見た目を戻す。
- * 見出しは `## TL;DR` `## キーポイント` `### [MM:SS] …` が来る想定。
+ * 見出しは `## キーポイント` `### [MM:SS] …` が来る想定（冒頭の要点は見出しなし）。
  */
 .summary-body {
     line-height: 1.75;

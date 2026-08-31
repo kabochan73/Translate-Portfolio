@@ -45,7 +45,7 @@ class VideoShowTest extends TestCase
     {
         $video = Video::factory()->create();
         Summary::factory()->for($video)->create([
-            'content' => "## TL;DR\n\nこれは要約です。",
+            'content' => "これは要約です。\n\n## キーポイント\n\n- x",
         ]);
 
         Livewire::test(VideoShow::class, ['video' => $video])

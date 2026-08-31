@@ -28,7 +28,7 @@ class GenerateSummaryTest extends TestCase
         Http::fake([
             'api.anthropic.com/v1/messages' => Http::response([
                 'content' => [
-                    ['type' => 'text', 'text' => "## TL;DR\n\n要約です。\n\n### [0:00] 冒頭\n\n導入。"],
+                    ['type' => 'text', 'text' => "全体の要点です。\n\n## キーポイント\n\n- ポイント1\n\n### [0:00] 冒頭\n\n導入。"],
                 ],
                 'usage' => ['input_tokens' => 100, 'output_tokens' => 50],
             ]),
@@ -48,9 +48,9 @@ class GenerateSummaryTest extends TestCase
 
         $summary = $video->summary;
         $this->assertSame(SummaryStatus::Completed, $summary->status);
-        $this->assertStringContainsString('## TL;DR', $summary->content);
+        $this->assertStringContainsString('## キーポイント', $summary->content);
         $this->assertSame('claude-sonnet-5', $summary->model);
-        $this->assertSame('v2', $summary->prompt_version);
+        $this->assertSame('v3', $summary->prompt_version);
         $this->assertSame(100, $summary->input_tokens);
         $this->assertSame(50, $summary->output_tokens);
         // 100/1e6*2 + 50/1e6*10 = 0.0007

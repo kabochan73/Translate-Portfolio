@@ -15,8 +15,8 @@ namespace App\Services;
  */
 class SummaryGenerator
 {
-    /** プロンプトを変えたら上げる。時刻付け対応で v1 → v2。 */
-    public const PROMPT_VERSION = 'v2';
+    /** プロンプトを変えたら上げる。時刻付け対応で v1 → v2、TL;DR 見出し廃止で v2 → v3。 */
+    public const PROMPT_VERSION = 'v3';
 
     /** 何秒ごとに [M:SS] マーカーを本文へ挿入するか。 */
     private const MARKER_INTERVAL_SECONDS = 15;
@@ -36,8 +36,7 @@ class SummaryGenerator
 
         次の Markdown 構成で出力してください:
 
-        ## TL;DR
-        （3〜4 文で全体の要点）
+        （最初に見出しを付けず、3〜4 文で全体の要点を書く）
 
         ## キーポイント
         - （箇条書きで 5〜8 項目）

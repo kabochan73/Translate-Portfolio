@@ -255,8 +255,7 @@ Claude Messages API の薄い HTTP ラッパー。**公式 SDK ではなく `Htt
 出力フォーマット（プロンプトで指定）:
 
 ```
-## TL;DR
-（3〜4 文）
+（見出しなしで全体の要点を 3〜4 文）
 
 ## キーポイント
 - （箇条書き 5〜8）
@@ -266,7 +265,7 @@ Claude Messages API の薄い HTTP ラッパー。**公式 SDK ではなく `Htt
 （短い段落）
 ```
 
-- `PROMPT_VERSION = 'v2'`（時刻対応で `v1` から上げた）。変えたら版を上げる。
+- `PROMPT_VERSION = 'v3'`（時刻対応で `v1`→`v2`、TL;DR 見出し廃止で `v2`→`v3`）。変えたら版を上げる。
 - `GenerateSummary` ジョブが結果を `summaries` に書き、
   `cost_usd` を `config('services.anthropic.*_cost_per_mtok')` × トークンで概算する
   （既定単価: input $2 / output $10 per Mtok、`claude-sonnet-5` の第一者 API レート）。

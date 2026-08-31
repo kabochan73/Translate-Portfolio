@@ -31,7 +31,7 @@ class SummaryGeneratorTest extends TestCase
             ->andReturnUsing(function (string $system, string $user) use (&$captured) {
                 $captured = $user;
 
-                return ['content' => '## TL;DR', 'input_tokens' => 200, 'output_tokens' => 40];
+                return ['content' => '要点です。', 'input_tokens' => 200, 'output_tokens' => 40];
             });
 
         $segments = [
@@ -51,7 +51,7 @@ class SummaryGeneratorTest extends TestCase
         // 1 チャンクなので usage はそのまま。
         $this->assertSame(200, $result['input_tokens']);
         $this->assertSame(40, $result['output_tokens']);
-        $this->assertSame('v2', $result['prompt_version']);
+        $this->assertSame('v3', $result['prompt_version']);
     }
 
     public function test_long_transcript_is_split_into_map_then_reduce_and_sums_usage(): void
@@ -85,7 +85,7 @@ class SummaryGeneratorTest extends TestCase
         // usage は全呼び出しの合算。
         $this->assertSame(1000 * $callCount, $result['input_tokens']);
         $this->assertSame(100 * $callCount, $result['output_tokens']);
-        $this->assertSame('v2', $result['prompt_version']);
+        $this->assertSame('v3', $result['prompt_version']);
     }
 
     public function test_hour_long_timestamp_uses_h_mm_ss_format(): void

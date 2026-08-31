@@ -101,7 +101,7 @@ videos 1 ──── 0..1 transcripts
 | `video_id` | bigint | NOT NULL, **UNIQUE**, FK → `videos.id` ON DELETE CASCADE | 1 動画 1 要約 |
 | `status` | varchar(16) | NOT NULL, DEFAULT `'pending'` | `pending` / `processing` / `completed` / `failed`（§4.2） |
 | `language` | varchar(16) | NOT NULL, DEFAULT `'ja'` | 要約の言語 |
-| `content` | text | NULL | 要約本文（Markdown）。`## TL;DR` / `## キーポイント` / `### [MM:SS] 見出し` を含む。完了まで NULL |
+| `content` | text | NULL | 要約本文（Markdown）。冒頭の要点（見出しなし）/ `## キーポイント` / `### [MM:SS] 見出し` を含む。完了まで NULL |
 | `model` | varchar(64) | NULL | 使用した Claude モデル ID（例 `claude-sonnet-5`） |
 | `prompt_version` | varchar(16) | NULL | プロンプトの版。時刻付け対応で `v2` |
 | `input_tokens` | integer | NULL | API 入力トークン数（map-reduce は合算） |

@@ -32,8 +32,8 @@ return new class extends Migration
             // 要約の言語。今は日本語固定だが将来の拡張に備えてカラムは持つ。
             $table->string('language', 16)->default('ja');
 
-            // 要約本文（Markdown）。「## TL;DR」「## キーポイント」
-            // 「### [MM:SS] 見出し」を含む。完了するまでは null。
+            // 要約本文（Markdown）。冒頭の要点（見出しなし）＋「## キーポイント」
+            // ＋「### [MM:SS] 見出し」を含む。完了するまでは null。
             $table->text('content')->nullable();
 
             // 実行メタ（デバッグ・表示用）。完了まで null。
