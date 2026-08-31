@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\ProcessingStatus;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -18,6 +19,9 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  */
 class Video extends Model
 {
+    /** database/factories/VideoFactory.php を Video::factory() で使えるようにする。 */
+    use HasFactory;
+
     /**
      * 一括代入（create / update に配列で渡す）を許可するカラム。
      *
@@ -125,18 +129,21 @@ class Video extends Model
      */
     public function scopeSearch(Builder $query, string $term): void
     {
-        // ワイルドカードを含む LIKE パターン。'%laravel%' のようになる。
-        // ILIKE は PostgreSQL の大文字小文字を区別しない LIKE。
-        $like = '%'.$term.'%';
-
         // 3 条件を OR でまとめる。where(Closure) で括弧付き（... OR ... OR ...）になり、
         // 呼び出し側が他の where を足しても論理が壊れない。
-        $query->where(function (Builder $q) use ($like): void {
-            $q->where('title', 'ilike', $like)
-                ->orWhere('channel_name', 'ilike', $like)
+        //
+        // whereLike(..., caseSensitive: false) は「大文字小文字を無視した LIKE」。
+        // 本番 PostgreSQL では ILIKE、テストの SQLite では lower() 比較へドライバごとに
+        // 展開されるので、生の 'ilike' を書くより移植性が高い。
+        // ワイルドカード（%）は自動では付かないので、部分一致にするため自分で囲む。
+        $pattern = '%'.$term.'%';
+
+        $query->where(function (Builder $q) use ($pattern): void {
+            $q->whereLike('title', $pattern, caseSensitive: false)
+                ->orWhereLike('channel_name', $pattern, caseSensitive: false)
                 // タグ名での一致は関連テーブルを見る必要があるので whereHas。
-                ->orWhereHas('tags', function (Builder $tagQuery) use ($like): void {
-                    $tagQuery->where('name', 'ilike', $like);
+                ->orWhereHas('tags', function (Builder $tagQuery) use ($pattern): void {
+                    $tagQuery->whereLike('name', $pattern, caseSensitive: false);
                 });
         });
     }
