@@ -45,7 +45,8 @@
         ],
         "dev": [
             "Composer\\Config::disableProcessTimeout",
-            "@php artisan dev"
+            "docker compose up -d postgres redis",
+            "npx concurrently -k -c \"#93c5fd,#c4b5fd,#fdba74\" \"php artisan serve\" \"php artisan queue:work redis --tries=3 --sleep=1\" \"npm run dev\" --names=serve,queue,vite"
         ],
         "test": [
             "@php artisan config:clear --ansi @no_additional_args",
