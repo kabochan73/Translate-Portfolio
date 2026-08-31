@@ -16,9 +16,9 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
 
-<body class="min-h-screen bg-gray-50 text-gray-900 antialiased">
+<body class="min-h-screen bg-white text-gray-900 antialiased">
     {{-- どのページでも共通のヘッダー。スクロールしても上に貼り付く。 --}}
-    <header class="sticky top-0 z-10 border-b border-gray-200 bg-white/90 backdrop-blur">
+    <header class="sticky top-0 z-10 border-b border-gray-200 bg-zinc-50 backdrop-blur">
         <div class="mx-auto flex max-w-6xl flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3">
             <a href="{{ route('videos.index') }}" class="shrink-0 text-lg font-semibold">
                 {{ config('app.name') }}
