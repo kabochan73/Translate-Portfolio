@@ -227,7 +227,8 @@ Claude Messages API の薄い HTTP ラッパー。**公式 SDK ではなく `Htt
 
 - `complete(string $system, string $user, int $maxTokens = 4096): array`
   → `{ content, input_tokens, output_tokens }`。`input_tokens` はキャッシュ読み書き分も合算。
-- `timeout(120)` + `Http::retry(3, 1000, ..., throw: false)` で 429 / 529 に対応。
+- `timeout(120)` + `Http::retry(3, 1000, ..., throw: false)` で一時的エラー
+  （429 / 500 / 503 / 529）に対応。
 - prompt caching: system プロンプトを
   `[{ type: 'text', text: '...', cache_control: { type: 'ephemeral' } }]` 形式で送る
   （`anthropic-version: 2023-06-01` のみ。`anthropic-beta` ヘッダは不要）。
@@ -390,7 +391,7 @@ $videos = Video::query()
 | YouTube API 失敗 | ジョブをリトライ → 3 回ダメなら `failed`（`failed_step = metadata`） |
 | 字幕が存在しない | 正常系。`no_transcript` |
 | 字幕ライブラリの例外 | リトライ → ダメなら `failed`（`failed_step = transcript`） |
-| Claude 429 / 529 | `Http::retry` で吸収 → ダメならジョブリトライ → `failed`（`failed_step = summary`） |
+| Claude 429 / 500 / 503 / 529 | `Http::retry` で吸収 → ダメならジョブリトライ → `failed`（`failed_step = summary`） |
 | Claude その他 4xx/5xx | ジョブリトライ → `failed` |
 
 - `failed_reason` はユーザーに見せる前提で、生スタックトレースではなく

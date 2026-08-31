@@ -81,11 +81,19 @@ class AnthropicService
         return $this->model;
     }
 
+    /** HTTP クライアント側でリトライする一時的エラーのステータスコード。 */
+    private const RETRYABLE_STATUS = [
+        429, // レート制限
+        500, // Anthropic 側の一時的な内部エラー
+        503, // ゲートウェイが一時的に応答不可（実測で稀に発生）
+        529, // 過負荷（overloaded_error）
+    ];
+
     /**
      * 共通のリクエスト設定。
      *
-     * 429（レート制限）/ 529（過負荷）は HTTP クライアント側でも 3 回リトライする
-     * （throw: false なので、リトライ対象外のエラーは complete() 側の ->throw() で拾う）。
+     * 一時的なエラー（RETRYABLE_STATUS）は HTTP クライアント側でも 3 回リトライする。
+     * throw: false なので、リトライ対象外のエラーは complete() 側の ->throw() で拾う。
      */
     private function request(): PendingRequest
     {
@@ -97,7 +105,7 @@ class AnthropicService
         ]))
             ->timeout(120)
             ->retry(3, 1000, function ($exception) {
-                return in_array($exception->response?->status(), [429, 529], true);
+                return in_array($exception->response?->status(), self::RETRYABLE_STATUS, true);
             }, throw: false);
     }
 }
