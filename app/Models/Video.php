@@ -37,6 +37,17 @@ class Video extends Model
     ];
 
     /**
+     * 新規インスタンスの初期値。
+     *
+     * DB カラムにも default 'pending' があるが、それは INSERT 後に効くもの。
+     * Video::create() 直後の（まだ refresh していない）インスタンスでも
+     * $video->status を non-null にするためここでも既定値を持たせる。
+     */
+    protected $attributes = [
+        'status' => 'pending',
+    ];
+
+    /**
      * DB の値 ⇄ PHP の型 の変換ルール。
      *
      * - status は文字列カラムだが、読み書きは ProcessingStatus enum で行える。
