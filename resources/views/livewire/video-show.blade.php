@@ -16,7 +16,7 @@
      終了状態になると @if が false になり wire:poll ごと DOM から消える。 --}}
 <div @unless ($isTerminal) wire:poll.3s @endunless>
 
-    <div class="mt-2 grid grid-cols-1 gap-4 lg:grid-cols-2">
+    <div class="grid grid-cols-1 gap-4 lg:grid-cols-2">
 
         {{-- ============ 左カラム：動画とメタ情報 ============ --}}
         <div class="lg:sticky lg:top-20 lg:self-start">

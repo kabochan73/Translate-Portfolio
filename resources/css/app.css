@@ -18,6 +18,14 @@
     line-height: 1.75;
     color: #374151;
 }
+/* 先頭要素（冒頭の段落や見出し）の上マージンを消して、
+   要約ブロックの始まりを少し上に詰める。末尾も同様に下を詰める。 */
+.summary-body > :first-child {
+    margin-top: 0;
+}
+.summary-body > :last-child {
+    margin-bottom: 0;
+}
 .summary-body h1,
 .summary-body h2 {
     font-size: 1.05rem;
